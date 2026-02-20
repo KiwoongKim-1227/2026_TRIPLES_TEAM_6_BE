@@ -1,0 +1,109 @@
+server:
+  forward-headers-strategy: framework
+  port: 8080
+  servlet:
+    context-path: /
+  shutdown: graceful
+
+spring:
+  application:
+    name: lastcup-api
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    hikari:
+      connection-init-sql: SET time_zone = '+09:00'
+
+  mail:
+    host: ${MAIL_HOST:smtp.naver.com}
+    port: ${MAIL_PORT:465}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          starttls:
+            enable: true
+            required: true
+    default-encoding: UTF-8
+
+  jackson:
+    time-zone: Asia/Seoul
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        jdbc:
+          time_zone: Asia/Seoul
+    open-in-view: false
+
+# 소셜 OAuth 설정
+app:
+  firebase:
+    admin-key: ${FIREBASE_ADMIN_KEY}
+  oauth:
+    google:
+      client-ids: ${GOOGLE_CLIENT_IDS:${GOOGLE_CLIENT_ID}}
+    kakao:
+      user-info-url: ${KAKAO_USER_INFO_URL:https://kapi.kakao.com/v2/user/me?secure_resource=true}
+    apple:
+      client-id: ${APPLE_CLIENT_ID}
+      key-url: ${APPLE_KEY_URL:https://appleid.apple.com/auth/keys}
+  swagger:
+    server-url: ${SWAGGER_SERVER_URL:https://api.lastcup.site}
+    server-description: ${SWAGGER_SERVER_DESCRIPTION:API Server}
+    local-server-url: ${SWAGGER_LOCAL_SERVER_URL:http://localhost:8080}
+    local-server-description: ${SWAGGER_LOCAL_SERVER_DESCRIPTION:Local Server}
+  password-reset:
+    token-ttl-minutes: ${PASSWORD_RESET_TTL_MINUTES:30}
+    from-address: ${PASSWORD_RESET_FROM:${MAIL_USERNAME}}
+# JWT
+jwt:
+  issuer: ${JWT_ISSUER:lastcup}
+  secret: ${JWT_SECRET_KEY}
+  access-token-validity: 3600000      # 1시간
+  refresh-token-validity: 1209600000  # 14일
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    groups-order: DESC
+    operations-sorter: method
+
+# AWS S3
+aws:
+  region: ${AWS_REGION:ap-northeast-2}
+  s3:
+    bucket: ${AWS_S3_BUCKET}
+    public-base-url: ${AWS_S3_PUBLIC_BASE_URL:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    mail:
+      enabled: false

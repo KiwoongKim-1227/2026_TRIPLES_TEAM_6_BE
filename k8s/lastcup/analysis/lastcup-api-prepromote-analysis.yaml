@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1 # ARGO ROLLOUT CRD 의 API 그룹, v1alpha1 양식
+kind: AnalysisTemplate           # 이 파일로 AnalysisTemplate을 만들겠다
+metadata:
+  name: lastcup-api-prepromote
+  namespace: lastcup
+spec:
+  metrics:
+    # 1. 앱이 살아있는가?
+    - name: preview-actuator-health
+      interval: 10s
+      count: 6
+      failureLimit: 2
+      provider:
+        web:
+          # 클러스터 내부에서 접근하므로 서비스 이름과 네임스페이스로 URL 작성
+          url: "http://lastcup-api-preview.lastcup.svc.cluster.local/actuator/health"
+          timeoutSeconds: 5
+          jsonPath: "{$.status}" # JSON 에서 status 필드의 값 뽑아서 result 변수에 저장 (result는 내장 컨벤션)
+      successCondition: result == "UP" # 10초 간격 / 6번 시도 / 2번까지 실패 허용,/ UP 응답시 성공
+
+    # 2. API 스택이 정상 동작하는가?
+    - name: preview-api-docs
+      interval: 10s
+      count: 6
+      failureLimit: 2
+      provider:
+        web:
+          # 클러스터 내부에서 접근하므로 서비스 이름과 네임스페이스로 URL 작성
+          url: "http://lastcup-api-preview.lastcup.svc.cluster.local/api-docs"
+          timeoutSeconds: 5
+      successCondition: result.statusCode == 200 # 10초 간격 / 6번 시도 / 2번까지 실패 허용 / 200 응답시 성공

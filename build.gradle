@@ -1,0 +1,76 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.lastcup'
+version = '0.0.1-SNAPSHOT'
+description = 'LastCup'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Validation / JPA
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // JWT (jjwt)
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // Google ID Token 검증, apple (GoogleIdTokenVerifier)
+    implementation 'com.google.api-client:google-api-client:2.8.1'
+    implementation 'com.google.oauth-client:google-oauth-client:1.36.0'
+    implementation 'com.google.http-client:google-http-client-jackson2:1.44.1'
+    implementation 'com.nimbusds:nimbus-jose-jwt:10.0.2'
+
+    // Swagger / OpenAPI
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
+    // Firebase Admin (FCM)
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+    // AWS S3
+    implementation platform('software.amazon.awssdk:bom:2.25.66')
+    implementation 'software.amazon.awssdk:s3'
+
+    // DB
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Devtools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'com.h2database:h2'
+
+    // Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
